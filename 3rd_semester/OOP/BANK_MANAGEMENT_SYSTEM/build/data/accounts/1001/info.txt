@@ -1,0 +1,9 @@
+First Name: shriram
+Last Name: khandbahale
+Account Number: 1001
+Account Type: S
+PAN Number: 312312
+Aadhaar Number: 2000328432
+Contact Number: 9505309002
+Age: 17
+Address: 3/4

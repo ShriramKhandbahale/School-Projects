@@ -1,0 +1,3 @@
+Name                |    Account Number    |    Account Type
+hello world		    |	 1002	           |	C
+shriram khandbahale				|	1001	|	S
