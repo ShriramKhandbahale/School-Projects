@@ -1,0 +1,19 @@
+Ticket No: 112
+
+Seats Allocated:S-20  S-21  Train: Udyan Abha Toofan Express
+Boarding Time: 21:45
+Class: Anubhuti Class
+Quota: General
+Source: fdas
+Destination: fdas
+
+Passenger 1 Details:
+  Name: fsda
+  Gender: fdas
+  Age: 21
+
+Passenger 2 Details:
+  Name: fdsa
+  Gender: fasd
+  Age: 43
+

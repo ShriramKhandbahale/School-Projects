@@ -22,6 +22,7 @@ void print_format_line()
 
 void processing_animation()
 {
+
     clear();
 
     printf("\e[?25l");
