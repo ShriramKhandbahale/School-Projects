@@ -1,14 +1,4 @@
 #include "../include/account.h"
-#include "../include/globals.h"
-#include "../include/menus.h"
-#include <fstream>
-#include <limits>
-#include <cctype>
-#include <unistd.h>
-#include <string>
-#include <iostream>
-#include <sys/stat.h>
-#include "../include/account.h"
 
 void Account::set_account_number(int user_count)
 {
@@ -58,8 +48,7 @@ void User::print_success_message()
 
     std::cout << "Account created Successfully\n";
     std::cout << "Your Account number is : " << get_account_number() << std::endl;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    getchar();
+    hold();
 }
 
 void User::create_account()
@@ -149,21 +138,81 @@ void User::write_account(int account_number)
                             << "\t\t\t\t|\t" << get_account_number()
                             << "\t|\t" << get_account_type() << std::endl;
     add_account_to_register.close();
+
+    // generating a passbook
+    std::string passbook_file = folder_name + "/passbook.txt";
+    std::ofstream passbook(passbook_file);
+    passbook << "Time                          "
+             << "Withdrawal          "
+             << "Deposit          "
+             << "Balance          " << std::endl;
+    for (int i = 0; i < 75; i++)
+    {
+        passbook << "-";
+        if (i == 74)
+        {
+            passbook << std::endl;
+        }
+    }
+    passbook.close();
+
+    //create subdir for untracked transactions
+    std::string s_account_number = std::to_string(account_number);
+    folder_name = "data/accounts/" + s_account_number + "/untracked";
+    mkdir(folder_name.c_str(), 0777);
+
+    std::string path = folder_name + "/withdrawal.txt";
+    std::ofstream withdrawal(path);
+    path = folder_name + "/deposit.txt";
+    std::ofstream deposit(path);
+
     print_success_message();
 }
 
 void delete_account()
 {
-    int input_account_number;
-    std::cout << "Enter Account Number: ";
-    std::cin >> input_account_number;
-    if (delete_file(input_account_number) == 0)
+    char choice;
+    int input_account_number = login_prompt();
+
+    std::string s_account_number = std::to_string(input_account_number);
+    std::string path = "data/accounts/" + s_account_number + "/info.txt";
+    std::ifstream account_info(path);
+    std::string line;
+
+    print_format_line();
+    std::cout << std::endl;
+    while (!account_info.eof())
     {
-        clear();
-        std::cout << "Account deleted\n";
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        getchar();
+        getline(account_info, line);
+        std::cout << line << std::endl;
     }
+    print_format_line();
+
+    std::cout << "\nAre you sure you want to continue (y/n) : ";
+    std::cin >> choice;
+    choice = toupper(choice);
+
+    if (choice == 'Y')
+    {
+        if (delete_file(input_account_number) == 0)
+        {
+            clear();
+            std::cout << "Account " << input_account_number << " was closed\n";
+        }
+    }
+
+    /*
+    std::ifstream stats_r("data/stats/user_count.txt");
+    int user_count;
+    stats_r >> user_count;
+    stats_r.close();
+    std::ofstream stats_w("data/stats/user_count.txt");
+    user_count -= 1;
+    stats_w << user_count;
+    stats_w.close();
+    */
+
+    // delete_record("data/register/registered_accounts.txt", (user_count + 1) - 999);
 }
 
 void update_account()
@@ -175,8 +224,7 @@ void update_account()
     {
         clear();
         std::cout << "Record Updated\n";
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        getchar();
+        hold();
     }
 }
 
@@ -188,6 +236,29 @@ void display_registered_accounts()
     {
         std::cout << var_string << std::endl;
     }
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    getchar();
+    hold();
+}
+
+void delete_record(const char *file_name, int n)
+{
+    std::ifstream is(file_name);
+
+    std::ofstream ofs;
+    ofs.open("temp.txt", std::ofstream::out);
+
+    char c;
+    int line_no = 1;
+    while (is.get(c))
+    {
+        if (c == '\n')
+            line_no++;
+
+        if (line_no != n)
+            ofs << c;
+    }
+    ofs.close();
+    is.close();
+
+    remove(file_name);
+    rename("temp.txt", file_name);
 }

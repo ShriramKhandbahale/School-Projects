@@ -1,6 +1,10 @@
 #ifndef ACCOUNT_H
 #define ACCOUNT_H
 
+#include "../include/account.h"
+#include "../include/globals.h"
+#include "../include/menus.h"
+
 #include <string>
 
 class Account
@@ -36,6 +40,17 @@ public:
     void get_account_info();
     void print_success_message();
 };
+
+#include <fstream>
+#include <limits>
+#include <cctype>
+#include <unistd.h>
+
+void delete_record(const char *file_name, int n);
+
+#include <string>
+#include <iostream>
+#include <sys/stat.h>
 
 int generate_account_number();
 void display_registered_accounts();

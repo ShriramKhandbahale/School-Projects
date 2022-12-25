@@ -5,6 +5,6 @@ void deposit_amount();
 
 void withdrawal_amount();
 
-// void deposit_amount(int, double);
+void transfer_amount();
 
 #endif
